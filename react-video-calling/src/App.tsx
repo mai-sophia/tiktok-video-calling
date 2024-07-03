@@ -16,3 +16,30 @@ const client = new StreamVideoClient({ apiKey, user, token });
 const call = client.call('default', callId);
 call.join({ create: true });
 
+export default function App() {
+  return (
+    <StreamVideo client={client}>
+      <StreamCall call={call}>
+        <MyUILayout />
+      </StreamCall>
+    </StreamVideo>
+  );
+}
+
+export const MyUILayout = () => {
+  const call = useCall();
+
+  const { useCallCallingState, useParticipantCount } = useCallStateHooks();
+  const callingState = useCallCallingState();
+  const participantCount = useParticipantCount();
+
+  if (callingState !== CallingState.JOINED) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      Call "{call.id}" has {participantCount} participants
+    </div>
+  );
+};
